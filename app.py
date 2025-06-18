@@ -121,6 +121,12 @@ def verify_otp():
     user_otp = request.form.get('otp')
     stored_otp = session['verification_user']['otp']
     
+    # Validate 6-digit OTP
+    if len(user_otp) != 6:
+        return render_template('verify.html', 
+                              error="OTP must be 6 digits",
+                              telegram_id=session['verification_user']['telegram_id'])
+    
     if user_otp == stored_otp:
         session.pop('signup_data', None)
         session.pop('verification_user', None)
@@ -205,7 +211,8 @@ def admin():
     
     users = read_users()
     last_10 = users[-10:][::-1]
-    return render_template('admin.html', total_users=len(users), last_signups=last_10)
+    products = read_products()
+    return render_template('admin.html', total_users=len(users), last_signups=last_10, products=products)
 
 @app.route('/download-users')
 def download_users():
