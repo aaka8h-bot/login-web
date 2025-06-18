@@ -1,0 +1,211 @@
+<!-- templates/cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .gold-text {
+            color: #ffd700;
+        }
+        .table {
+            color: #fff;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table th {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 215, 0, 0.05);
+        }
+        .btn-gold {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        .btn-outline-gold {
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            background: transparent;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-outline-gold:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .summary-card {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        .remove-item {
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .remove-item:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/shop">
+                <i class="fas fa-arrow-left me-2"></i>LUXURY <span class="gold-text">STORE</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="/cart" class="position-relative me-4">
+                    <i class="fas fa-shopping-cart cart-icon"></i>
+                    <span class="cart-count">{{ cart | length }}</span>
+                </a>
+                <div class="dropdown">
+                    <button class="btn btn-outline-gold dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i> {{ session.user.name }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/shop"><i class="fas fa-store me-2"></i> Continue Shopping</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h1 class="mb-4">Your Shopping Cart</h1>
+        
+        {% if not cart %}
+        <div class="text-center py-5">
+            <i class="fas fa-shopping-cart fa-5x mb-4" style="color: #ffd700;"></i>
+            <h2>Your cart is empty</h2>
+            <p class="lead">Add some products to your cart first</p>
+            <a href="/shop" class="btn-gold mt-3">Browse Products</a>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ item.image }}" alt="{{ item.name }}" 
+                                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px;">
+                                        <div>
+                                            <h6 class="mb-0">{{ item.name }}</h6>
+                                            <small class="text-white-50">{{ item.description }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${{ item.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ "%.2f" | format(item.price * item.quantity) }}</td>
+                                <td class="text-center">
+                                    <i class="fas fa-trash-alt remove-item" data-id="{{ item.id }}"></i>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h4 class="mb-4">Order Summary</h4>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>${{ "%.2f" | format(total) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax:</span>
+                        <span>${{ "%.2f" | format(total * 0.08) }}</span>
+                    </div>
+                    
+                    <hr class="my-3" style="border-color: rgba(255,255,255,0.1);">
+                    
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total:</span>
+                        <span>${{ "%.2f" | format(total * 1.08) }}</span>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <a href="/checkout" class="btn-gold">Proceed to Checkout</a>
+                    </div>
+                    
+                    <div class="d-grid mt-2">
+                        <a href="/shop" class="btn-outline-gold">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Remove item from cart
+        document.querySelectorAll('.remove-item').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const productId = this.dataset.id;
+                fetch(`/remove-from-cart/${productId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.closest('tr').style.opacity = '0';
+                            setTimeout(() => {
+                                location.reload();
+                            }, 300);
+                        }
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
