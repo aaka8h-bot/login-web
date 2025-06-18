@@ -1,0 +1,236 @@
+<!-- templates/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: rgba(20, 20, 20, 0.8);
+            min-height: 100vh;
+            border-right: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            border-left: 3px solid transparent;
+            padding: 12px 20px;
+        }
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+            border-left-color: #ffd700;
+        }
+        .card {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .stat-card {
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .table {
+            color: #fff;
+        }
+        .table th {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+        .btn-gold {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
+            border: none;
+            color: #000;
+            font-weight: bold;
+        }
+        .btn-outline-gold {
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            background: transparent;
+            font-weight: bold;
+        }
+        .btn-outline-gold:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 p-0 sidebar">
+                <div class="p-4 text-center border-bottom" style="border-color: rgba(255,215,0,0.1) !important;">
+                    <h3 class="gold-text">ADMIN PANEL</h3>
+                </div>
+                <div class="p-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-users me-2"></i> Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-box me-2"></i> Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-shopping-cart me-2"></i> Orders
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <a class="nav-link" href="/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Admin Dashboard</h2>
+                    <span>{{ datetime.now().strftime('%Y-%m-%d') }}</span>
+                </div>
+                
+                <!-- Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="text-white-50">Total Users</h5>
+                                    <h2>{{ total_users }}</h2>
+                                </div>
+                                <i class="fas fa-users fa-3x" style="color: #ffd700;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="text-white-50">Active Today</h5>
+                                    <h2>{{ last_signups | length }}</h2>
+                                </div>
+                                <i class="fas fa-user-check fa-3x" style="color: #4CAF50;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="text-white-50">Products</h5>
+                                    <h2>{{ products | length }}</h2>
+                                </div>
+                                <i class="fas fa-box fa-3x" style="color: #2196F3;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="text-white-50">Revenue</h5>
+                                    <h2>$12,890</h2>
+                                </div>
+                                <i class="fas fa-chart-line fa-3x" style="color: #9C27B0;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4>User Management</h4>
+                                <div>
+                                    <a href="/download-users" class="btn-gold me-2">
+                                        <i class="fas fa-download me-2"></i> Download Users
+                                    </a>
+                                    <button class="btn-outline-gold" data-bs-toggle="modal" data-bs-target="#clearUsersModal">
+                                        <i class="fas fa-trash-alt me-2"></i> Clear All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Users -->
+                <div class="card p-3">
+                    <h4 class="mb-3">Recent Signups</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Telegram ID</th>
+                                    <th>Password</th>
+                                    <th>OTP</th>
+                                    <th>Signup Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in last_signups %}
+                                <tr>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.telegram_id }}</td>
+                                    <td>{{ user.password }}</td>
+                                    <td>{{ user.otp }}</td>
+                                    <td>{{ user.login_time }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Users Modal -->
+    <div class="modal fade" id="clearUsersModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: #1e1e1e; color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Confirm Clear All Users</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete all user data? This action cannot be undone.</p>
+                    <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> All user records will be permanently deleted</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="/clear-users" class="btn btn-danger">Delete All Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
