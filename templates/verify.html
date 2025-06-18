@@ -87,7 +87,7 @@
                         {% endif %}
                         
                         <p class="text-white text-center mb-4">
-                            We've sent a 4-digit OTP to your Telegram ID: <strong>{{ telegram_id }}</strong>
+                            We've sent a 6-digit OTP to your Telegram ID: <strong>{{ telegram_id }}</strong>
                         </p>
                         
                         {% if not otp_sent %}
@@ -105,7 +105,7 @@
                         <form method="POST" action="/verify-otp">
                             <div class="mb-3">
                                 <input type="text" name="otp" class="form-control otp-input" 
-                                       maxlength="4" placeholder="____" required>
+                                       maxlength="6" placeholder="______" required>
                             </div>
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn-gold">
@@ -135,7 +135,7 @@
         // Auto move to next input
         const otpInput = document.querySelector('input[name="otp"]');
         otpInput.addEventListener('input', function() {
-            if (this.value.length === 4) {
+            if (this.value.length === 6) {
                 this.form.submit();
             }
         });
