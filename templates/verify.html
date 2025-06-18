@@ -1,0 +1,145 @@
+<!-- templates/verify.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-header {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        .otp-input {
+            letter-spacing: 10px;
+            font-size: 2rem;
+            text-align: center;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-gold {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb700 100%);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        .btn-outline-gold {
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            background: transparent;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .btn-outline-gold:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .telegram-icon {
+            color: #0088cc;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-telegram telegram-icon"></i> Verify OTP</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+                        
+                        <p class="text-white text-center mb-4">
+                            We've sent a 4-digit OTP to your Telegram ID: <strong>{{ telegram_id }}</strong>
+                        </p>
+                        
+                        {% if not otp_sent %}
+                            <div class="d-grid mb-4">
+                                <button id="send-otp" class="btn-gold">
+                                    <i class="fas fa-paper-plane"></i> Send OTP
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success text-center">
+                                OTP sent successfully! Check your Telegram
+                            </div>
+                        {% endif %}
+                        
+                        <form method="POST" action="/verify-otp">
+                            <div class="mb-3">
+                                <input type="text" name="otp" class="form-control otp-input" 
+                                       maxlength="4" placeholder="____" required>
+                            </div>
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn-gold">
+                                    <i class="fas fa-check-circle"></i> Verify & Login
+                                </button>
+                            </div>
+                            <div class="d-grid">
+                                <button type="button" id="resend-otp" class="btn-outline-gold">
+                                    <i class="fas fa-sync-alt"></i> Resend OTP
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('send-otp').addEventListener('click', function() {
+            window.location.href = '/send-otp';
+        });
+        
+        document.getElementById('resend-otp').addEventListener('click', function() {
+            window.location.href = '/send-otp';
+        });
+        
+        // Auto move to next input
+        const otpInput = document.querySelector('input[name="otp"]');
+        otpInput.addEventListener('input', function() {
+            if (this.value.length === 4) {
+                this.form.submit();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
